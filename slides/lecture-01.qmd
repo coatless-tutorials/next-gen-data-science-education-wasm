@@ -1,21 +1,30 @@
 ---
-title: "Linear Regression Overview"
-subtitle: "A Comparison in R and Python"
+title: "Demo: Data Science Education with WebAssembly"
+subtitle: "Linear Regression in R and Python"
 format: 
     live-revealjs: 
         scrollable: true
 webr:
     packages: 
-      - ggplot2
+        - ggplot2
 pyodide: 
     packages: 
-      - scikit-learn
-      - pandas
-      - matplotlib
+        - scikit-learn
+        - pandas
+        - matplotlib
 engine: knitr
 ---
 
 {{< include ../_extensions/r-wasm/live/_knitr.qmd >}}
+
+## Overview
+
+The goal of this presentation is to showcase the power of WebAssembly (WASM) in data science education by allowing real-time code execution, visualization, and exercises directly within the slide deck.
+
+We do this by exploring the concept of linear regression using both R and Python code snippets.
+
+
+---
 
 ## Introduction
 
@@ -48,7 +57,7 @@ Where:
 
 ---
 
-## Implementation
+## Generating Data
 
 Let's look at how to implement linear regression in R and Python by first simulating some data
 
@@ -60,10 +69,10 @@ Let's look at how to implement linear regression in R and Python by first simula
 # Create sample data
 set.seed(123)
 x <- 1:100
-y <- 2 * x + rnorm(100, mean = 0, sd = 20)
-data <- data.frame(x = x, y = y)
+y <- 2 * x + 1 + rnorm(100, mean = 0, sd = 3)
+df <- data.frame(x = x, y = y)
 
-head(data)
+head(df)
 ```
 
 ## Python
@@ -75,13 +84,57 @@ import pandas as pd
 # Create sample data
 np.random.seed(123)
 x = np.arange(1, 101)
-y = 2 * x + np.random.normal(0, 20, 100)
+y = 2 * x + 1 + np.random.normal(0, 3, 100)
 data = pd.DataFrame({'x': x, 'y': y})
 
 data.head()
 ```
 
 :::
+
+---
+
+## Guessing the Coefficients
+
+Try to fit a linear regression model by hand through manipulating coefficients below:
+
+The linear regression with $\beta_0 =$
+`{ojs} beta_0_Tgl` and $\beta_1 =$ `{ojs} beta_1_Tgl` is:
+
+```{ojs}
+//| echo: false
+import {Tangle} from "@mbostock/tangle"
+
+// Setup Tangle reactive inputs
+viewof beta_0 = Inputs.input(0);
+viewof beta_1 = Inputs.input(1);
+beta_0_Tgl = Inputs.bind(Tangle({min: -30, max: 300, minWidth: "1em", step: 1}), viewof beta_0);
+beta_1_Tgl = Inputs.bind(Tangle({min: -5, max: 5, minWidth: "1em", step: 0.25}), viewof beta_1);
+
+// draw plot in R
+regression_plot(beta_0, beta_1)
+```
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - regression_plot
+regression_plot <- function(beta_0, beta_1) {
+
+  # Create scatter plot  
+  plot(
+    df$x, df$y, 
+    xlim = c(min(df$x) - 10, max(df$x) + 10),
+    ylim = c(min(df$y) - 10, max(df$y) + 10)
+  )
+
+  # Graph regression line
+  abline(a = beta_0, b = beta_1, col = "red")
+}
+```
+:::
+
 
 ---
 
@@ -95,7 +148,7 @@ Now that we have our data, let's fit a linear regression model to it:
 
 ```{webr}
 # Fit linear regression model
-model <- lm(y ~ x, data = data)
+model <- lm(y ~ x, data = df)
 
 # View summary of the model
 summary(model)
@@ -130,7 +183,7 @@ We can visualize the data and the regression line to see how well the model fits
 library(ggplot2) 
 
 # Plot the data and regression line
-ggplot(data, aes(x = x, y = y)) +
+ggplot(df, aes(x = x, y = y)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE, color = "red") +
   theme_minimal() +
