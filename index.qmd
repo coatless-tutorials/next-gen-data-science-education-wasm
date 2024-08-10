@@ -32,9 +32,10 @@ WebAssembly is a binary instruction format for a stack-based virtual machine, de
 
 ## How It Works
 
-1. **R Integration**: We use [webR](https://docs.r-wasm.org/webr/latest/), an R distribution compiled to WebAssembly, to run R code in the browser.
-2. **Python Integration**: [Pyodide](https://pyodide.org/en/stable/), a Python distribution for the browser, is used to execute Python code.
+1. **R Integration**: [webR](https://docs.r-wasm.org/webr/latest/), an R distribution compiled to WebAssembly, is used by `quarto-live` to run R code in the browser.
+2. **Python Integration**: [Pyodide](https://pyodide.org/en/stable/), a Python distribution for the browser, is used by `quarto-live` to execute Python code.
 3. **Quarto + RevealJS**: The presentation is built using [Quarto](https://quarto.org/) and [RevealJS](https://revealjs.com/), providing a smooth, web-based slide experience.
+4. **Quarto Extensions**: Additional Quarto extensions like `quarto-live`, `quarto-drop`, and `quarto-countdown` enhance the interactivity and functionality of the presentation.
 
 ## Benefits of This Approach
 
