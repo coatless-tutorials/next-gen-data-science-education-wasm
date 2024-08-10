@@ -1,0 +1,67 @@
+---
+title: "Next Generation of Data Science Education"
+subtitle: "Interactive Coding in Web Browsers: A WebAssembly Demonstration"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+---
+
+## Welcome to the Future of Interactive Presentations
+
+In this demonstration, we showcase cutting-edge technology that brings interactive coding directly into slide decks using WebAssembly (WASM) through the new official Quarto WebAssembly backend: [`quarto-live`](https://r-wasm.github.io/quarto-live/) by George Stagg. This innovative approach revolutionizes how we present and teach programming concepts by allowing for real-time code execution, visualization, and exercises within the presentation itself.
+
+You can view the demonstration here: 
+
+
+For more on the Quarto WebAssembly backend, see the [official documentation](https://r-wasm.github.io/quarto-live/).
+
+## What's Inside
+
+This demonstration includes a Linear Regression overview that uses both R and Python code snippets to illustrate the concepts. You can interact with the code blocks, modify them, and see the results instantly. We've also included a built-in timer on the exercise
+page to provide a stoppage time for the exercise.
+
+## The Power of WebAssembly in Presentations
+
+WebAssembly is a binary instruction format for a stack-based virtual machine, designed as a portable target for high-level languages like C, C++, and Rust. By leveraging WebAssembly:
+
+- We can run R and Python code directly in the browser.
+- Presentations become interactive, allowing audience members to modify and run code in real-time.
+- Complex computations and visualizations can be performed client-side, reducing server load and improving responsiveness.
+
+## How It Works
+
+1. **R Integration**: We use [webR](https://docs.r-wasm.org/webr/latest/), an R distribution compiled to WebAssembly, to run R code in the browser.
+2. **Python Integration**: [Pyodide](https://pyodide.org/en/stable/), a Python distribution for the browser, is used to execute Python code.
+3. **Quarto + RevealJS**: The presentation is built using [Quarto](https://quarto.org/) and [RevealJS](https://revealjs.com/), providing a smooth, web-based slide experience.
+
+## Benefits of This Approach
+
+- **Engagement**: Audience members can experiment with code in real-time, fostering active learning.
+- **Flexibility**: Presenters can easily modify examples on the fly to answer questions or explore different scenarios.
+- **Accessibility**: No need for local installations; everything runs in the browser.
+- **Reproducibility**: Ensures everyone sees the same results, regardless of their local setup.
+
+## Getting Started
+
+To explore this demo:
+
+1. Navigate through the links above to view each component.
+2. In the slide decks and tutorials, look for interactive code blocks where you can modify and run code.
+3. Experiment with different inputs and see how the outputs change in real-time.
+
+## Technical Requirements
+
+### For Viewers and Presenters
+
+- A modern web browser with WebAssembly support (most up-to-date browsers support this).
+- For the best experience, use a desktop or laptop computer rather than a mobile device.
+
+### Authoring
+
+To create interactive presentations like this, you'll need to use Quarto with the `quarto-live` backend. Please make sure you have at least Quarto v1.4.0 or later installed. You may need to install additional packages for R and Python support.
+
+
+## Feedback and Questions
+
+Enjoy exploring the future of interactive data science presentations!

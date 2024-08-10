@@ -1,0 +1,21 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Next Generation of Data Science Education"
+  reader-mode: true
+  repo-url: https://github.com/coatless-tutorials/next-gen-data-science-education
+  repo-actions: [edit, issue]
+  navbar:
+    background: light
+    foreground: dark
+    align: right
+    right:
+      - href: index.qmd
+        text: Home
+      - href: https://r-wasm.github.io/quarto-live/
+        text: Quarto Live
+      - icon: github
+        href: https://github.com/coatless-tutorials/next-gen-data-science-education
+        aria-label: GitHub
