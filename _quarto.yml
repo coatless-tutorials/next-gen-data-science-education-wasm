@@ -1,8 +1,6 @@
 project:
   type: website
   output-dir: _site
-  render:
-    - slides/*.qmd
 
 website:
   title: "Next Generation of Data Science Education"
