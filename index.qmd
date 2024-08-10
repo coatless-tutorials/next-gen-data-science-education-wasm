@@ -13,6 +13,7 @@ In this demonstration, we showcase cutting-edge technology that brings interacti
 
 You can view the demonstration here: 
 
+{{< revealjs file="slides/lecture-01.html" height="500px">}}
 
 For more on the Quarto WebAssembly backend, see the [official documentation](https://r-wasm.github.io/quarto-live/).
 
