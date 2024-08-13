@@ -3,7 +3,7 @@ project:
   output-dir: _site
 
 website:
-  title: "Next Generation of Data Science Education"
+  title: "The Next Generation of Data Science Education"
   reader-mode: true
   repo-url: https://github.com/coatless-tutorials/next-gen-data-science-education
   repo-actions: [edit, issue]

@@ -12,6 +12,9 @@ pyodide:
         - scikit-learn
         - pandas
         - matplotlib
+        - seaborn
+        - statsmodels
+
 engine: knitr
 ---
 

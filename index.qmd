@@ -1,5 +1,5 @@
 ---
-title: "Next Generation of Data Science Education"
+title: "The Next Generation of Data Science Education"
 subtitle: "Interactive Coding in Web Browsers: A WebAssembly Demonstration"
 format:
   html:
