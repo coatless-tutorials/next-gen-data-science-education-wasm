@@ -1,6 +1,6 @@
 # The Next Generation of Data Science Education with WebAssembly
 
-This repository contains the code powering **[The Next Generation of Data Science Education with WebAssembly](https://tutorials.thecoatlessprofessor.com/next-gen-data-science-education/)** Quarto website demonstration.
+This repository contains the code powering **[The Next Generation of Data Science Education with WebAssembly](https://tutorials.thecoatlessprofessor.com/next-gen-data-science-education-wasm/)** Quarto website demonstration.
 
 ## Installation
 
