@@ -9,13 +9,16 @@ format:
 
 ## Welcome to the Future of Data Science Education
 
-In this demonstration, we showcase cutting-edge technology that brings interactive coding directly into slide decks using WebAssembly (WASM) through the new official Quarto WebAssembly backend: [`quarto-live`](https://r-wasm.github.io/quarto-live/) by George Stagg. This innovative approach revolutionizes how we present and teach data science concepts by allowing for real-time code execution, visualization, and exercises within the presentation itself.
+In this demonstration, we showcase cutting-edge technology that brings interactive coding directly into slide decks using WebAssembly (WASM) through the new official Quarto WebAssembly backend: [`quarto-live`](https://r-wasm.github.io/quarto-live/) by George Stagg. This innovative approach revolutionizes how we present and teach data science concepts by allowing for real-time code execution, visualization, and exercises within the presentation itself. For more on the Quarto WebAssembly backend, see the [official documentation](https://r-wasm.github.io/quarto-live/).
 
 You can view the demonstration of this technology in the following slide deck: 
 
 {{< revealjs file="slides/lecture-01.html" height="500px">}}
 
-For more on the Quarto WebAssembly backend, see the [official documentation](https://r-wasm.github.io/quarto-live/).
+In interactive lab form, we have:
+
+- [Exploring Palmer Penguins](tutorials/data-manuipulation.qmd)
+
 
 ## What's Inside
 

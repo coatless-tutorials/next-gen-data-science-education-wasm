@@ -124,6 +124,11 @@ regression_plot(beta_0, beta_1)
 #| define:
 #|   - regression_plot
 regression_plot <- function(beta_0, beta_1) {
+  # Figure out why scope changed between Live august and now.
+  set.seed(123)
+  x <- 1:100
+  y <- 2 * x + 1 + rnorm(100, mean = 0, sd = 3)
+  df <- data.frame(x = x, y = y)
 
   # Create scatter plot  
   plot(
