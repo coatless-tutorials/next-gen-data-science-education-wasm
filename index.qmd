@@ -17,7 +17,7 @@ You can view the demonstration of this technology in the following slide deck:
 
 In interactive lab form, we have:
 
-- [Exploring Palmer Penguins](tutorials/data-manuipulation.qmd)
+- [Exploring Palmer Penguins](tutorials/tutorials/demo-lab.qmd)
 
 
 ## What's Inside
