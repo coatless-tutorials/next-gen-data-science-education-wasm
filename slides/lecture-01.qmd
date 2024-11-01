@@ -141,8 +141,6 @@ regression_plot <- function(beta_0, beta_1) {
   abline(a = beta_0, b = beta_1, col = "red")
 }
 ```
-:::
-
 
 ---
 
