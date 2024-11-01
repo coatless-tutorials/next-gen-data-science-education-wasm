@@ -5,6 +5,7 @@ pyodideOjs = {
     setupPython,
     startPyodideWorker,
     b64Decode,
+    collapsePath,
   } = window._exercise_ojs_runtime;
 
   const statusContainer = document.getElementById("exercise-loading-status");
@@ -22,6 +23,11 @@ pyodideOjs = {
     revealStatus.remove();
     document.querySelector(".reveal > .slides").appendChild(revealStatus);
   }
+
+  // Make any reveal slides with live cells scrollable
+  document.querySelectorAll(".reveal .exercise-cell").forEach((el) => {
+    el.closest('section.slide').classList.add("scrollable");
+  })
 
   // Pyodide supplemental data and options
   const dataContent = document.querySelector(`script[type=\"pyodide-data\"]`).textContent;
@@ -59,19 +65,35 @@ pyodideOjs = {
         file = name;
       }
 
-      // Create directory tree, swallowing any `dir exists` errors
-      let path = file;
-      while (path = path.substr(0, path.lastIndexOf('/'))) {
+      // Collapse higher directory structure
+      file = collapsePath(file);
+
+      // Create directory tree, ignoring "directory exists" VFS errors
+      const parts = file.split('/').slice(0, -1);
+      let path = '';
+      while (parts.length > 0) {
+        path += parts.shift() + '/';
         try {
           await pyodide.FS.mkdir(path);
         } catch (e) {
-          if (!(e.name == "ErrnoError" && e.errno == 20)) {
-            throw e;
+          if (e.name !== "ErrnoError") throw e;
+          if (e.errno !== 20) {
+            const errorTextPtr = await pyodide._module._strerror(e.errno);
+            const errorText = await pyodide._module.UTF8ToString(errorTextPtr);
+            throw new Error(`Filesystem Error ${e.errno} "${errorText}".`);
           }
         }
       }
 
-      return await pyodide.FS.writeFile(file, new Uint8Array(data));
+      // Write this file to the VFS
+      try {
+        return await pyodide.FS.writeFile(file, new Uint8Array(data));
+      } catch (e) {
+        if (e.name !== "ErrnoError") throw e;
+        const errorTextPtr = await pyodide._module._strerror(e.errno);
+        const errorText = await pyodide._module.UTF8ToString(errorTextPtr);
+        throw new Error(`Filesystem Error ${e.errno} "${errorText}".`);
+      }
     }).reduce((cur, next) => cur.then(next), Promise.resolve());
 
     statusText.textContent = `Pyodide environment setup`;

@@ -112,6 +112,23 @@ function ParseBlock(block, engine)
     end
   end
 
+  -- When echo: false: disable the editor
+  if (attr.echo == false) then
+    attr.edit = false
+  end
+
+  -- When `include: false`: disable the editor, source block echo, and output
+  if (attr.include == false) then
+    attr.edit = false
+    attr.echo = false
+    attr.output = false
+  end
+
+  -- If we're not executing anything, there's no point showing an editor
+  if (attr.edit == nil) then
+    attr.edit = attr.eval
+  end
+
   return {
     code = code,
     attr = attr
@@ -132,6 +149,23 @@ function assertBlockExercise(type, engine, block)
     error("Can't create `" .. engine .. "` " .. type ..
       " block, `exercise` not defined in cell options.")
   end
+end
+
+function ExerciseDataBlocks(btype, block)
+  local ex = block.attr.exercise
+  if (type(ex) ~= "table") then
+    ex = { ex }
+  end
+
+  local blocks = {}
+  for idx, ex_id in pairs(ex) do
+    blocks[idx] = pandoc.RawBlock(
+      "html",
+      "<script type=\"exercise-" .. btype .. "-" .. ex_id .. "-contents\">\n" ..
+      json_as_b64(block) .. "\n</script>"
+    )
+  end
+  return blocks
 end
 
 function PyodideCodeBlock(code)
@@ -166,21 +200,13 @@ function PyodideCodeBlock(code)
   -- Supplementary execise blocks: setup, check, hint, solution
   if (block.attr.setup) then
     assertBlockExercise("setup", "pyodide", block)
-    return pandoc.RawBlock(
-      "html",
-      "<script type=\"exercise-setup-" .. block.attr.exercise .. "-contents\">\n" ..
-      json_as_b64(block) .. "\n</script>"
-    )
+    return ExerciseDataBlocks("setup", block)
   end
 
   if (block.attr.check) then
     assertBlockExercise("check", "pyodide", block)
     if live_options["grading"] then
-      return pandoc.RawBlock(
-        "html",
-        "<script type=\"exercise-check-" .. block.attr.exercise .. "-contents\">\n" ..
-        json_as_b64(block) .. "\n</script>"
-      )
+      return ExerciseDataBlocks("check", block)
     else
       return {}
     end
@@ -229,11 +255,6 @@ function PyodideCodeBlock(code)
     block_input = input,
   }
 
-  -- If we're not executing anything, there's no point showing an editor
-  if (block.attr.edit == nil) then
-    block.attr.edit = block.attr.eval
-  end
-
   -- Render appropriate OJS for the type of client-side block we're working with
   local ojs_source = nil
   if (block.attr.exercise) then
@@ -251,7 +272,7 @@ function PyodideCodeBlock(code)
   append_ojs_template(ojs_source, ojs_vars)
 
   return pandoc.Div({
-    pandoc.Div({}, pandoc.Attr("pyodide-" .. block_id)),
+    pandoc.Div({}, pandoc.Attr("pyodide-" .. block_id, { 'exercise-cell' })),
     pandoc.RawBlock(
       "html",
       "<script type=\"pyodide-" .. block_id .. "-contents\">\n" ..
@@ -292,21 +313,13 @@ function WebRCodeBlock(code)
   -- Supplementary execise blocks: setup, check, hint, solution
   if (block.attr.setup) then
     assertBlockExercise("setup", "webr", block)
-    return pandoc.RawBlock(
-      "html",
-      "<script type=\"exercise-setup-" .. block.attr.exercise .. "-contents\">\n" ..
-      json_as_b64(block) .. "\n</script>"
-    )
+    return ExerciseDataBlocks("setup", block)
   end
 
   if (block.attr.check) then
     assertBlockExercise("check", "webr", block)
     if live_options["grading"] then
-      return pandoc.RawBlock(
-        "html",
-        "<script type=\"exercise-check-" .. block.attr.exercise .. "-contents\">\n" ..
-        json_as_b64(block) .. "\n</script>"
-      )
+      return ExerciseDataBlocks("check", block)
     else
       return {}
     end
@@ -355,11 +368,6 @@ function WebRCodeBlock(code)
     block_input = input,
   }
 
-  -- If we're not executing anything, there's no point showing an editor
-  if (block.attr.edit == nil) then
-    block.attr.edit = block.attr.eval
-  end
-
   -- Render appropriate OJS for the type of client-side block we're working with
   local ojs_source = nil
   if (block.attr.exercise) then
@@ -380,7 +388,7 @@ function WebRCodeBlock(code)
   HTMLWidget(block_id)
 
   return pandoc.Div({
-    pandoc.Div({}, pandoc.Attr("webr-" .. block_id)),
+    pandoc.Div({}, pandoc.Attr("webr-" .. block_id, { 'exercise-cell' })),
     pandoc.RawBlock(
       "html",
       "<script type=\"webr-" .. block_id .. "-contents\">\n" ..
@@ -648,14 +656,6 @@ function Pandoc(doc)
     resources = { "resources/pyodide-worker.js" },
     stylesheets = { "resources/live-runtime.css" },
   })
-
-  if (pyodide) then
-    -- Additional runtime dependencies for Pyodide
-    quarto.doc.add_html_dependency({
-      name = 'require-js',
-      scripts = { "resources/require.min.js" },
-    })
-  end
 
   -- Copy resources for upload to VFS at runtime
   local vfs_files = {}

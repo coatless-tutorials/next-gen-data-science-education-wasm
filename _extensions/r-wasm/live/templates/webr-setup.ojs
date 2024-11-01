@@ -1,6 +1,12 @@
 webROjs = {
   const { WebR } = window._exercise_ojs_runtime.WebR;
-  const { WebREvaluator, WebREnvironmentManager, setupR, b64Decode } = window._exercise_ojs_runtime;
+  const {
+    WebREvaluator,
+    WebREnvironmentManager,
+    setupR,
+    b64Decode,
+    collapsePath
+  } = window._exercise_ojs_runtime;
 
   const statusContainer = document.getElementById("exercise-loading-status");
   const indicatorContainer = document.getElementById("exercise-loading-indicator");
@@ -17,6 +23,11 @@ webROjs = {
     revealStatus.remove();
     document.querySelector(".reveal > .slides").appendChild(revealStatus);
   }
+
+  // Make any reveal slides with live cells scrollable
+  document.querySelectorAll(".reveal .exercise-cell").forEach((el) => {
+    el.closest('section.slide').classList.add("scrollable");
+  })
 
   // webR supplemental data and options
   const dataContent = document.querySelector(`script[type=\"webr-data\"]`).textContent;
@@ -60,9 +71,14 @@ webROjs = {
         file = name;
       }
 
-      // Create directory tree, swallowing any `dir exists` errors
-      let path = file;
-      while (path = path.substr(0, path.lastIndexOf('/'))) {
+      // Collapse higher directory structure
+      file = collapsePath(file);
+
+      // Create directory tree, ignoring "directory exists" VFS errors
+      const parts = file.split('/').slice(0, -1);
+      let path = '';
+      while (parts.length > 0) {
+        path += parts.shift() + '/';
         try {
           await webR.FS.mkdir(path);
         } catch (e) {
@@ -72,6 +88,7 @@ webROjs = {
         }
       }
 
+      // Write this file to the VFS
       return await webR.FS.writeFile(file, new Uint8Array(data));
     }).reduce((cur, next) => cur.then(next), Promise.resolve());
 
