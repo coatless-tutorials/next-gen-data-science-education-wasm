@@ -14,6 +14,8 @@ website:
     right:
       - href: index.qmd
         text: Home
+      - href: tutorials/demo-lab.qmd
+        text: Demo Lab
       - href: https://r-wasm.github.io/quarto-live/
         text: Quarto Live
       - icon: github

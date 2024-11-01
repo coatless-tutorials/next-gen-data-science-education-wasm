@@ -1,0 +1,420 @@
+---
+title: "Exploring Palmer Penguins"
+subtitle: "Demonstration with Quarto Live"
+format: live-html
+engine: knitr
+toc: true
+webr:
+  packages:
+    - palmerpenguins 
+    - dplyr
+    - ggplot2
+pyodide:
+  packages:
+    - pandas
+    - seaborn
+    - scipy
+---
+
+{{< include ../_extensions/r-wasm/live/_knitr.qmd >}}
+
+## Introduction
+
+Welcome to this interactive lab where we'll explore data science concepts using the Palmer Penguins dataset. We'll work with both R and Python to learn:
+
+- Data exploration and visualization
+- Basic statistical analysis  
+- Data manipulation and transformation
+- Creating publication-quality plots
+
+The Palmer Penguins dataset contains measurements from three penguin species observed on three islands in the Palmer Archipelago, Antarctica.
+
+## Getting Started with R
+
+Let's first load our required R packages and examine the data:
+
+```{webr}
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+
+# Take a look at the first few rows
+head(penguins)
+```
+
+### Exercise 1: Basic Data Exploration
+
+Using R, find out:
+
+1. How many penguins are in the dataset?
+2. What are the unique species?
+3. What's the average flipper length?
+
+```{webr}
+#| exercise: explore_r
+#| caption: Data Exploration in R
+# Your code here:
+list(
+  "Total penguins:" = _______,
+  "Species:" = _______,
+  "Mean flipper length:" = _______,
+)
+```
+
+```{webr}
+#| exercise: explore_r
+#| check: true
+
+if (all(c("Total penguins:", "Species:", "Mean flipper length:") %in% names(.result))) {
+
+  check_obs <- .result[["Total penguins:"]] == nrow(penguins)
+  check_species <- all(.result[["Species:"]] %in% unique(penguins$species))
+  check_mean <- isTRUE(all.equal(round(.result[["Mean flipper length:"]], 2), round(mean(penguins$flipper_length_mm, na.rm = TRUE), 2)))
+
+  if (check_obs && check_species && check_mean) { 
+         list(correct = TRUE, message = "Great job exploring the data!")
+  } else {
+    list(correct = FALSE, message = "One or more answers are incorrect. Try again.")
+  }
+} else {
+  list(correct = FALSE, message = "Make sure to calculate all three requested values.")
+}
+```
+
+::: {.hint exercise="explore_r"}
+- Use `nrow()` to count rows
+- Use `unique()` to find unique values
+- Use `mean()` with `na.rm=TRUE` to calculate means
+:::
+
+::: { .solution exercise="explore_r" }
+```r
+list(
+  "Total penguins:" = nrow(penguins),
+  "Species:" = unique(penguins$species),
+  "Mean flipper length:" = round(mean(penguins$flipper_length_mm, na.rm = TRUE), 2)
+)
+```
+:::
+
+## Visualizing Data in R
+
+Let's create some plots to understand relationships in our data.
+
+```{webr}
+ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point(alpha = 0.7) +
+  theme_minimal() +
+  labs(title = "Penguin Size by Species",
+       x = "Flipper Length (mm)",
+       y = "Body Mass (g)")
+```
+
+### Exercise 2: Create a Plot
+
+Create a box plot showing bill length by species and sex. Use `ggplot2` and color the boxes by sex.
+
+```{webr}
+#| exercise: plot_r
+#| caption: Create a Box Plot
+ggplot(penguins, aes(x = ______, y = ______, fill = ______)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "Bill Length by Species and Sex")
+```
+
+::: {.solution exercise="plot_r"}
+```{webr}
+#| exercise: plot_r
+#| solution: true
+ggplot(penguins, aes(x = species, y = bill_length_mm, fill = sex)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "Bill Length by Species and Sex")
+```
+:::
+
+
+
+## Python Analysis
+
+Now let's switch to Python and perform similar analyses:
+
+```{pyodide}
+import pandas as pd
+import seaborn as sns
+
+# Hot load the palmerpenguins package
+import micropip
+await micropip.install([
+  "palmerpenguins",
+  "setuptools" # dependency
+])
+
+from palmerpenguins import load_penguins
+import matplotlib.pyplot as plt
+
+# Load the data
+penguins = load_penguins()
+penguins.head()
+```
+
+### Exercise 3: Python Data Summary
+
+Create a summary of the numerical variables using pandas:
+
+```{pyodide}
+#| setup: true
+#| exercise: explore_py
+import pandas as pd
+import seaborn as sns
+
+# Hot load the palmerpenguins package
+import micropip
+await micropip.install([
+  "palmerpenguins",
+  "setuptools" # dependency
+])
+
+from palmerpenguins import load_penguins
+import matplotlib.pyplot as plt
+
+# Load the data
+penguins = load_penguins()
+penguins.head()
+```
+
+```{pyodide}
+#| exercise: explore_py
+#| caption: Data Summary in Python
+# Your code here:
+______
+```
+
+::: {.hint exercise="explore_py"}
+Use the pandas `describe()` method to get summary statistics
+:::
+
+::: {.solution exercise="explore_py"}
+```{pyodide}
+#| exercise: explore_py
+#| solution: true
+penguins.describe()
+```
+:::
+
+### Exercise 4: Statistical Analysis
+
+Using Python, test if there's a significant difference in flipper length between male and female penguins:
+
+
+```{pyodide}
+#| setup: true
+#| exercise: stats_py
+import pandas as pd
+import seaborn as sns
+
+# Hot load the palmerpenguins package
+import micropip
+await micropip.install([
+  "palmerpenguins",
+  "setuptools" # dependency
+])
+
+from palmerpenguins import load_penguins
+import matplotlib.pyplot as plt
+
+# Load the data
+penguins = load_penguins()
+penguins.head()
+```
+
+
+```{pyodide}
+#| exercise: stats_py
+#| caption: Statistical Test
+from scipy import stats
+
+# Filter out NA values
+males = penguins[penguins['sex'] == 'male']['flipper_length_mm'].dropna()
+females = penguins[penguins['sex'] == 'female']['flipper_length_mm'].dropna()
+
+# Perform t-test
+______
+```
+
+::: {.solution exercise="stats_py"}
+```{pyodide}
+#| exercise: stats_py
+#| solution: true
+# Perform t-test
+t_stat, p_val = stats.ttest_ind(males, females)
+print(f"T-statistic: {t_stat:.4f}")
+print(f"P-value: {p_val:.4f}")
+```
+:::
+
+## Visualization with Seaborn
+
+Let's create an advanced visualization using seaborn:
+
+```{pyodide}
+# Set the style
+sns.set_style("whitegrid")
+
+# Create the plot
+g = sns.FacetGrid(penguins, col="species", height=5)
+g.map_dataframe(sns.scatterplot, x="bill_length_mm", y="bill_depth_mm", hue="sex")
+g.add_legend()
+plt.show()
+```
+
+### Exercise 5: Create a Complex Visualization
+
+Create a violin plot showing the distribution of body mass by species, with separate plots for each sex:
+
+
+```{pyodide}
+#| setup: true
+#| exercise: plot_py
+import pandas as pd
+import seaborn as sns
+
+# Hot load the palmerpenguins package
+import micropip
+await micropip.install([
+  "palmerpenguins",
+  "setuptools" # dependency
+])
+
+from palmerpenguins import load_penguins
+import matplotlib.pyplot as plt
+
+# Load the data
+penguins = load_penguins()
+penguins.head()
+```
+
+```{pyodide}
+#| exercise: plot_py
+#| caption: Create a Violin Plot
+# Your code here:
+plt.figure(figsize=(10, 6))
+______
+plt.show()
+```
+
+::: {.hint exercise="plot_py"}
+Use `sns.violinplot()` with the following parameters:
+
+- `data=penguins`
+- `x="species"`
+- `y="body_mass_g"`
+- `hue="sex"`
+:::
+
+::: {.solution exercise="plot_py"}
+```python
+plt.figure(figsize=(10, 6))
+sns.violinplot(data=penguins, x="species", y="body_mass_g", hue="sex")
+plt.title("Distribution of Body Mass by Species and Sex")
+plt.show()
+```
+:::
+
+## Final Challenge
+
+### Exercise 6: Data Analysis Project
+
+Choose either R or Python to complete the following analysis:
+
+1. Filter the data to include only complete cases (no missing values)
+2. Calculate the average measurements for each species-sex combination
+3. Create a visualization showing these averages
+4. Add error bars showing standard error
+
+Use the code block below and refer to previous examples for guidance:
+
+::: {.panel-tabset}
+
+## R Version
+
+```{webr}
+#| exercise: final_r
+#| caption: Final Project - R
+# Your analysis here
+______
+```
+
+::: {.solution exercise="final_r"}
+```r
+library(tidyverse)
+
+penguins |>
+  drop_na()|>
+  group_by(species, sex) |>
+  summarise(
+    mean_flipper = mean(flipper_length_mm),
+    se_flipper = sd(flipper_length_mm)/sqrt(n())
+  ) |>
+  ggplot(aes(x=species, y=mean_flipper, fill=sex)) +
+    geom_bar(stat="identity", position="dodge") +
+    geom_errorbar(aes(ymin=mean_flipper-se_flipper, 
+                     ymax=mean_flipper+se_flipper),
+                 position=position_dodge(0.9),
+                 width=0.25) +
+    theme_minimal() +
+    labs(title="Average Flipper Length by Species and Sex",
+         y="Flipper Length (mm)")
+```
+:::
+
+## Python Version
+
+```{pyodide}
+#| exercise: final_py
+#| caption: Final Project - Python
+# Your analysis here
+______
+```
+
+::: {.solution exercise="final_py"}
+```python
+import numpy as np
+
+# Calculate statistics
+stats_df = penguins.groupby(['species', 'sex'])['flipper_length_mm'].agg(['mean', 'std', 'count']).reset_index()
+stats_df['se'] = stats_df['std'] / np.sqrt(stats_df['count'])
+
+# Create plot
+plt.figure(figsize=(10, 6))
+species_list = stats_df['species'].unique()
+x = np.arange(len(species_list))
+width = 0.35
+
+plt.bar(x - width/2, stats_df[stats_df['sex']=='male']['mean'], 
+        width, label='Male', yerr=stats_df[stats_df['sex']=='male']['se'])
+plt.bar(x + width/2, stats_df[stats_df['sex']=='female']['mean'],
+        width, label='Female', yerr=stats_df[stats_df['sex']=='female']['se'])
+
+plt.xlabel('Species')
+plt.ylabel('Flipper Length (mm)')
+plt.title('Average Flipper Length by Species and Sex')
+plt.xticks(x, species_list)
+plt.legend()
+plt.show()
+```
+:::
+
+:::
+
+## Conclusion
+
+In this lab, we've:
+
+- Explored the Palmer Penguins dataset using both R and Python
+- Created various types of visualizations
+- Performed basic statistical analyses
+- Learned about data manipulation techniques
+
+For more information about the dataset, visit the [Palmer Penguins website](https://allisonhorst.github.io/palmerpenguins/).
